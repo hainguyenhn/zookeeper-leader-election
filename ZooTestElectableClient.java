@@ -39,6 +39,7 @@ public class ZooTestElectableClient extends ZooElectableClient {
 			System.out.println("leader");
 		}
 		else{
+			cl.run();
 			System.out.println("worker");
 		}
 		
