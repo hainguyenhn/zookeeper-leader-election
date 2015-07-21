@@ -5,11 +5,17 @@ public class Server extends Thread
 {
    private ServerSocket serverSocket;
    
-   public Server() throws IOException
+   public Server() 
    {
 	  int port = 6000;
-      serverSocket = new ServerSocket(port);
-      serverSocket.setSoTimeout(10000);
+      try {
+		serverSocket = new ServerSocket(port);
+
+		serverSocket.setSoTimeout(10000);
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
    }
 
    public void run()

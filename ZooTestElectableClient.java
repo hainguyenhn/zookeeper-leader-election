@@ -2,19 +2,9 @@
  * ZooTestElectableClient
  *
  */
-
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 
-import org.apache.zookeeper.*;
-import org.apache.zookeeper.AsyncCallback.DataCallback;
-import org.apache.zookeeper.AsyncCallback.StatCallback;
-import org.apache.zookeeper.data.ACL;
-import org.apache.zookeeper.data.Id;
-import org.apache.zookeeper.data.Stat;
-import org.apache.zookeeper.KeeperException.Code;
-import org.apache.zookeeper.ZooDefs.Ids;
+import org.apache.zookeeper.KeeperException;
 
 // See http://zookeeper.apache.org/doc/trunk/recipes.html#sc_leaderElection
 public class ZooTestElectableClient extends ZooElectableClient {
@@ -39,7 +29,13 @@ public class ZooTestElectableClient extends ZooElectableClient {
 	*/
 		boolean leader;
 		leader = getCachedIsLeader();
+		Server sv = null;
+	
+			sv = new Server();
+	
+		Client cl = new Client("ab",6000);
 		if(leader){
+			sv.run();
 			System.out.println("leader");
 		}
 		else{
