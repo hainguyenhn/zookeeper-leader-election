@@ -28,16 +28,24 @@ public class ZooTestElectableClient extends ZooElectableClient {
 	
 	// Override this function to determine what work should be done
 	void performRole() {
-		
+		/*
 		if ( isFirstRun || ( wasLeader != getCachedIsLeader() ) ) {
-			System.out.println( "ZooTestElectableClient::performRole:: work performed (" + getElectionGUIDZNodePath() + ") with state (leader=" + getCachedIsLeader() + ", isFirstRun=" + isFirstRun + ", wasLeader=" + wasLeader + ")" );			
+			System.out.println( "ZooTestElectableClient::performRole:: work performed (" + getElectionGUIDZNodePath() + ") with state (leader=" + getCachedIsLeader() 
+					+ ", isFirstRun=" + isFirstRun + ", wasLeader=" + wasLeader + ")" );			
 		}
 		else {
 			System.out.println( "ZooTestElectableClient::performRole:: work  was not performed (" + getElectionGUIDZNodePath() + ")" );
 		}
+	*/
+		boolean leader;
+		leader = getCachedIsLeader();
+		if(leader){
+			System.out.println("leader");
+		}
+		else{
+			System.out.println("worker");
+		}
 		
-		isFirstRun = false;
-		wasLeader = getCachedIsLeader();
 	}
 	
 	// Main entry point

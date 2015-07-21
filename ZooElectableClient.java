@@ -171,7 +171,13 @@ public abstract class ZooElectableClient implements Watcher, ZooZNodeDeletionMon
 	// Elects a leader and caches the results for this client
 	private void electAndCacheLeader() throws KeeperException, InterruptedException {
 		isLeader = getElectionGUIDZNodePath().equals( getLeaderElectionGUIDZNodePath( null ) );
-		System.out.println( "ZooElectableClient::electAndCacheLeader:: " + isLeader );
+		/*if (isLeader == true){
+			System.out.print("i am leader");
+		}
+		else{
+			System.out.print("i am not leader");
+		}
+		*/
 	}
 
 	// Sets a deletion monitor on the next lowest election GUID (if we are the leader, then we listen to ourselves)
