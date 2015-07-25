@@ -3,6 +3,8 @@
  *
  */
 import java.io.IOException;
+import java.net.InetAddress;
+import java.util.List;
 
 import org.apache.zookeeper.KeeperException;
 
@@ -12,8 +14,8 @@ public class ZooTestElectableClient extends ZooElectableClient {
 	boolean isFirstRun = true;
 	boolean wasLeader = false;
 	
-	public ZooTestElectableClient() throws KeeperException, IOException, InterruptedException {
-		super();
+	public ZooTestElectableClient(String ip) throws KeeperException, IOException, InterruptedException {
+		super(ip);
 	}
 	
 	// Override this function to determine what work should be done
@@ -30,26 +32,36 @@ public class ZooTestElectableClient extends ZooElectableClient {
 		boolean leader;
 		leader = getCachedIsLeader();
 		Server sv = null;
-	
-			sv = new Server();
-	
-		Client cl = new Client("ab",6000);
+
 		if(leader){
-			sv.run();
+			
 			System.out.println("leader");
+			List<String> ip = get_woker_ip();
+			System.out.println(ip);
 		}
 		else{
-			cl.run();
+
 			System.out.println("worker");
+			
+			List<String> ip = get_woker_ip();
+			System.out.println(ip);
 		}
+	
 		
 	}
 	
 	// Main entry point
     public static void main(String args[])
         throws KeeperException, IOException, InterruptedException {
-        ZooElectableClient zooClient = new ZooTestElectableClient();
+    	InetAddress IP=InetAddress.getLocalHost();
+    	System.out.println("IP of my system is := "+IP.getHostAddress());
+		
+    	String ip = IP.getHostAddress();
+    
+	
+        ZooElectableClient zooClient = new ZooTestElectableClient(ip);
         zooClient.run();
         System.out.println( "ZooTestElectableClient::main:: client finished." );
+        
     }
 }

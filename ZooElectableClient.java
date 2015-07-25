@@ -4,6 +4,8 @@
  */
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -39,6 +41,8 @@ public abstract class ZooElectableClient implements Watcher, ZooZNodeDeletionMon
 	
 	// The path to our election GUID znode
 	private String electionGUIDZNodePath = null;
+
+	private String ip;
 	
 	// @return String containing path to persistent election znode
 	private static final String getElectionZNodePath() { return DEFAULT_ELECTION_ZNODE_PATH; }
@@ -135,14 +139,67 @@ public abstract class ZooElectableClient implements Watcher, ZooZNodeDeletionMon
 		}
 	}
 	
+	protected List<String> getWorkers(){
+		List<String> guids = null;
+		try {
+
+		guids = getZooKeeper().getChildren(getElectionZNodePath(), false);
+
+		} catch (KeeperException e) {
+
+		// TODO Auto-generated catch block
+
+		e.printStackTrace();
+
+		} catch (InterruptedException e) {
+
+		// TODO Auto-generated catch block
+
+		e.printStackTrace();
+
+		}
+		return guids;
+		}
+	
+	//return all worker ip address
+	protected List<String> get_woker_ip(){
+		List<String> guids = getWorkers();
+		List<String> ip = new ArrayList<String>();
+		System.out.println("Here");
+		System.out.println(guids);
+		try {
+
+		for(int i = 0; i < guids.size(); i++){
+			System.out.println(guids.get(i));
+			String data = new String(getZooKeeper().getData(getElectionZNodePath() + "/"  + guids.get(i), false, null), StandardCharsets.UTF_8);
+			ip.add(data);
+		}
+
+		} catch (KeeperException e) {
+
+		// TODO Auto-generated catch block
+
+		e.printStackTrace();
+
+		} catch (InterruptedException e) {
+
+		// TODO Auto-generated catch block
+
+		e.printStackTrace();
+
+		}
+		return ip;
+		}
 	// Constructor
-	protected ZooElectableClient() throws KeeperException, IOException, InterruptedException {
+	protected ZooElectableClient(String ip) throws KeeperException, IOException, InterruptedException {
 		// Initialize the ZooKeeper api
 		hZooKeeper = new ZooKeeper( getHosts(), getTimeOutMs(), this );
 		// Attempt to create the election znode parent
 		conditionalCreateElectionZNode();
 		// Create our election GUID
-		createElectionGUIDZNode();
+		this.ip = ip;
+		createElectionGUIDZNode(ip);
+		
 	}
 		
 	// Attempts to create an election znode if it doesn't already exist
@@ -162,9 +219,11 @@ public abstract class ZooElectableClient implements Watcher, ZooZNodeDeletionMon
 	}
 	
 	// Creates a sequential znode with a lifetime of these client process
-	private void createElectionGUIDZNode() throws KeeperException, InterruptedException {
+	private void createElectionGUIDZNode(String ip) throws KeeperException, InterruptedException {
+		byte[] ip_bytes = ip.getBytes();
+		System.out.print(ip_bytes);
 		// Create an empheral|sequential file
-		electionGUIDZNodePath = getZooKeeper().create( getElectionZNodePath() + "/guid-", null /*data*/, Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL );
+		electionGUIDZNodePath = getZooKeeper().create( getElectionZNodePath() + "/guid-", ip_bytes , Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL );
 		System.out.println( "ZooElectableClient::createElectionGUIDZNode:: created with path:" +  electionGUIDZNodePath );
 	}
 
