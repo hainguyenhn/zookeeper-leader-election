@@ -3,13 +3,14 @@ import java.io.*;
 
 public class Client
 {
-	Socket client = null;
+	private Socket client;
+
 	public Client(String serverName, int port){
 		try
-		{
+		{	
 			System.out.println("Connecting to " + serverName
 					+ " on port " + port);
-			client = new Socket(serverName, port);
+			this.client = new Socket(serverName, port);
 
 		}catch(IOException e)
 		{
@@ -18,7 +19,7 @@ public class Client
 	}
 	public void run(){
 		System.out.println("Just connected to "
-				+ client.getRemoteSocketAddress());
+				+ this.client.getRemoteSocketAddress());
 		OutputStream outToServer;
 		try {
 			outToServer = client.getOutputStream();
@@ -37,5 +38,10 @@ public class Client
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
+	}
+	
+	public static void main(String[] args){
+		Client cl = new Client("localhost", 9090);
+		cl.run();
 	}
 }

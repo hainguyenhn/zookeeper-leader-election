@@ -10,8 +10,8 @@ public class Server extends Thread
 		int port = 6000;
 		try {
 			serverSocket = new ServerSocket(port);
-
-			serverSocket.setSoTimeout(10000);
+			serverSocket = new ServerSocket(9090, 0, InetAddress.getByName("localhost"));
+			serverSocket.setSoTimeout(99999999);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -47,5 +47,10 @@ public class Server extends Thread
 				break;
 			}
 		}
-	} 
+	}
+	
+	public static void main(String[] args){
+		Server sv = new Server();
+		sv.run();
+	}
 }

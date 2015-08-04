@@ -8,3 +8,6 @@
 /Client.class
 /GreetingServer.class
 /Server.class
+/GreetingClient.class
+/client_server.class
+/leader_worker.class
