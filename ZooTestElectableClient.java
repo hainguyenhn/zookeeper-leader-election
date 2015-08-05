@@ -14,6 +14,7 @@ public class ZooTestElectableClient extends ZooElectableClient {
 	boolean isFirstRun = true;
 	boolean wasLeader = false;
 	leader_worker worker; 
+	Thread t;
 	
 	public ZooTestElectableClient(String ip) throws KeeperException, IOException, InterruptedException {
 		super(ip);
@@ -41,7 +42,8 @@ public class ZooTestElectableClient extends ZooElectableClient {
 			}
 			
 			worker = new leader_worker(true, "hai");
-			Thread t = new Thread(worker);
+			t = new Thread(worker);
+			t.setDaemon(true);
 			t.start();
 			
 			System.out.println("leader");
@@ -56,7 +58,8 @@ public class ZooTestElectableClient extends ZooElectableClient {
 	
 			}
 			worker = new leader_worker(false, "hai");
-			Thread t = new Thread(worker);
+			t = new Thread(worker);
+			t.setDaemon(true);
 			t.start();
 			System.out.println("worker");
 			List<String> ip = get_woker_ip();
@@ -70,11 +73,11 @@ public class ZooTestElectableClient extends ZooElectableClient {
     public static void main(String args[])
         throws KeeperException, IOException, InterruptedException {
     	InetAddress IP=InetAddress.getLocalHost();
-    	System.out.println("IP of my system is := "+IP.getHostAddress());
+    	System.out.println("IP of my system is := ");
 		
-    	String ip = IP.getHostAddress();
+    	//String ip = IP.getHostAddress();
     
-	
+    	String ip = "1";
         ZooElectableClient zooClient = new ZooTestElectableClient(ip);
         zooClient.run();
         System.out.println( "ZooTestElectableClient::main:: client finished." );
