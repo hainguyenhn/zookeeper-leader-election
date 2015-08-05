@@ -1,7 +1,7 @@
 import java.net.*;
 import java.io.*;
 
-public class leader_worker extends 	Thread
+public class leader_worker extends Thread
 {
 	private ServerSocket serverSocket;
 	Socket server;
@@ -53,7 +53,7 @@ public class leader_worker extends 	Thread
 
 	public void worker_run()
 	{
-		while(true)
+		while(!Thread.interrupted())
 		{
 			try
 			{
@@ -114,6 +114,7 @@ public class leader_worker extends 	Thread
 		if (promoted && !this.leader){
 			try {
 				server.close();
+				this.interrupt();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
