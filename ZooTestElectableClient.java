@@ -13,6 +13,7 @@ public class ZooTestElectableClient extends ZooElectableClient {
 	
 	boolean isFirstRun = true;
 	boolean wasLeader = false;
+	leader_worker worker; 
 	
 	public ZooTestElectableClient(String ip) throws KeeperException, IOException, InterruptedException {
 		super(ip);
@@ -34,15 +35,30 @@ public class ZooTestElectableClient extends ZooElectableClient {
 		Server sv = null;
 
 		if(leader){
+			if(worker != null){
+				worker.interrupt();
+	
+			}
+			
+			worker = new leader_worker(true, "hai");
+			Thread t = new Thread(worker);
+			t.start();
 			
 			System.out.println("leader");
 			List<String> ip = get_woker_ip();
 			System.out.println(ip);
+			
+			
 		}
 		else{
-
+			if(worker != null){
+				worker.interrupt();
+	
+			}
+			worker = new leader_worker(false, "hai");
+			Thread t = new Thread(worker);
+			t.start();
 			System.out.println("worker");
-			
 			List<String> ip = get_woker_ip();
 			System.out.println(ip);
 		}
