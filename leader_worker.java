@@ -1,4 +1,5 @@
 import java.net.*;
+import java.util.Random;
 import java.io.*;
 
 public class leader_worker extends Thread
@@ -44,32 +45,32 @@ public class leader_worker extends Thread
 
 	public void run(){
 		if(this.leader){
-			leader_run();
+			leader_run(this.name);
 		}
 		else{
-			worker_run();
+			worker_run(this.name);
 		}
 	}
 
-	public void worker_run()
+	public void worker_run(String name)
 	{
 		while(!Thread.interrupted())
 		{
 			try
 			{
-				System.out.println("Worker: Waiting for leader's order: " +
+				System.out.println(name + " : Waiting for leader's order: " +
 						serverSocket.getLocalPort() + "...");
 				server = serverSocket.accept();
-				System.out.println("Worker: Just connected to "
+				System.out.println(name + " : Just connected to "
 						+ server.getRemoteSocketAddress());
 				DataInputStream in =
 						new DataInputStream(server.getInputStream());
 				System.out.println(in.readUTF());
 				DataOutputStream out =
 						new DataOutputStream(server.getOutputStream());
-				out.writeUTF("Worker: Thank you for connecting to "
+				out.writeUTF(name + " : Thank you for connecting to "
 						+ server.getLocalSocketAddress() + "\nGoodbye!");
-				server.close();
+				
 			}catch(SocketTimeoutException s)
 			{
 				System.out.println("Socket timed out!");
@@ -80,30 +81,44 @@ public class leader_worker extends Thread
 				break;
 			}
 		}
+		try {
+			server.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
-	public void leader_run(){
-		System.out.println("Leader: Just connected to worker:  "
+	public void leader_run(String name){
+		System.out.println(name + " : Just connected to worker:  "
 				+ this.client.getRemoteSocketAddress());
 		OutputStream outToServer;
+		while(true){
 		try {
 			outToServer = client.getOutputStream();
 
 			DataOutputStream out =
 					new DataOutputStream(outToServer);
 
-			out.writeUTF("Leader: Hello from "
-					+ client.getLocalSocketAddress());
+			out.writeUTF(" Hello from "
+					+ name);
 			InputStream inFromServer = client.getInputStream();
 			DataInputStream in =
 					new DataInputStream(inFromServer);
-			System.out.println("Leader: Worker replied " + in.readUTF());
+			System.out.println(name + " : Worker replied " + in.readUTF());
 			client.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		}
 	}
 
 	public boolean got_promoted(boolean promoted){
@@ -120,13 +135,14 @@ public class leader_worker extends Thread
 				e.printStackTrace();
 				success = false;
 			}	
-			leader_run();
+		
 		}
 		else{
 			success = false;
 		}
 		return success;
 	}
+
 
 	public static void main(String[] args){
 		leader_worker worker = new leader_worker(false, "hai");

@@ -42,7 +42,7 @@ public abstract class ZooElectableClient implements Watcher, ZooZNodeDeletionMon
 	// The path to our election GUID znode
 	private String electionGUIDZNodePath = null;
 
-	private String ip;
+	private String name;
 	
 	// @return String containing path to persistent election znode
 	private static final String getElectionZNodePath() { return DEFAULT_ELECTION_ZNODE_PATH; }
@@ -165,8 +165,6 @@ public abstract class ZooElectableClient implements Watcher, ZooZNodeDeletionMon
 	protected List<String> get_woker_ip(){
 		List<String> guids = getWorkers();
 		List<String> ip = new ArrayList<String>();
-		System.out.println("Here");
-		System.out.println(guids);
 		try {
 
 		for(int i = 0; i < guids.size(); i++){
@@ -191,14 +189,14 @@ public abstract class ZooElectableClient implements Watcher, ZooZNodeDeletionMon
 		return ip;
 		}
 	// Constructor
-	protected ZooElectableClient(String ip) throws KeeperException, IOException, InterruptedException {
+	protected ZooElectableClient(String name) throws KeeperException, IOException, InterruptedException {
 		// Initialize the ZooKeeper api
 		hZooKeeper = new ZooKeeper( getHosts(), getTimeOutMs(), this );
 		// Attempt to create the election znode parent
 		conditionalCreateElectionZNode();
 		// Create our election GUID
-		this.ip = ip;
-		createElectionGUIDZNode(ip);
+		this.name = name;
+		createElectionGUIDZNode(name);
 		
 	}
 		
