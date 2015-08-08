@@ -4,6 +4,7 @@
  */
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -59,6 +60,8 @@ public class ZooTestElectableClient extends ZooElectableClient {
 			}
 			
 			worker = new leader_worker(true, this.name);
+			ArrayList<String> list_worker = (ArrayList<String>) get_woker_ip();
+			worker.update_workers(list_worker);
 			t = new Thread(worker);
 			t.setDaemon(true);
 			t.start();
